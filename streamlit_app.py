@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import gspread
 from google.oauth2.service_account import Credentials
-
+from streamlit_autorefresh import st_autorefresh
 
 # ============================================================
 # PAGE CONFIG
@@ -12,6 +12,11 @@ st.set_page_config(
     page_title="NIFTY Model Dashboard",
     page_icon="📈",
     layout="wide"
+)
+
+st_autorefresh(
+    interval=5000,
+    key="data_refresh"
 )
 
 
