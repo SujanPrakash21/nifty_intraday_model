@@ -585,7 +585,6 @@ st.subheader(
     "🔎 Prediction Filter"
 )
 
-
 df["date_only"] = df["datetime"].dt.date
 
 
@@ -595,7 +594,7 @@ available_dates = sorted(
 )
 
 
-filter_col1, filter_col2 = st.columns(2)
+filter_col1, filter_col2, filter_col3 = st.columns(3)
 
 
 # ============================================================
@@ -614,7 +613,7 @@ with filter_col1:
 
 
 # ============================================================
-# FILTER DATE
+# FILTER BY DATE
 # ============================================================
 
 date_df = df[
@@ -623,16 +622,65 @@ date_df = df[
 
 
 # ============================================================
-# DATETIME DROPDOWN
+# SESSION DROPDOWN
 # ============================================================
 
-available_datetimes = sorted(
-    date_df["datetime"].unique(),
-    reverse=True
+available_sessions = (
+    date_df["session"]
+    .dropna()
+    .astype(str)
+    .unique()
+    .tolist()
+)
+
+
+# Sort sessions in logical order
+
+session_order = {
+    "Morning": 0,
+    "Afternoon": 1
+}
+
+
+available_sessions = sorted(
+    available_sessions,
+    key=lambda x: session_order.get(
+        x,
+        99
+    )
 )
 
 
 with filter_col2:
+
+    selected_session = st.selectbox(
+        "Session",
+        available_sessions,
+        index=0
+    )
+
+
+# ============================================================
+# FILTER BY DATE + SESSION
+# ============================================================
+
+session_df = date_df[
+    date_df["session"].astype(str)
+    == selected_session
+].copy()
+
+
+# ============================================================
+# DATETIME DROPDOWN
+# ============================================================
+
+available_datetimes = sorted(
+    session_df["datetime"].dropna().unique(),
+    reverse=True
+)
+
+
+with filter_col3:
 
     selected_datetime = st.selectbox(
         "Datetime",
@@ -647,8 +695,8 @@ with filter_col2:
 # SELECTED ROW
 # ============================================================
 
-selected_rows = date_df[
-    date_df["datetime"] == selected_datetime
+selected_rows = session_df[
+    session_df["datetime"] == selected_datetime
 ]
 
 
@@ -709,7 +757,6 @@ if not selected_rows.empty:
             None
         )
 
-
         if pd.isna(value):
 
             display_value = "N/A"
@@ -733,7 +780,6 @@ if not selected_rows.empty:
             "down_prob",
             None
         )
-
 
         if pd.isna(value):
 
@@ -766,7 +812,6 @@ if not selected_rows.empty:
             None
         )
 
-
         if pd.isna(value):
 
             display_value = "N/A"
@@ -793,7 +838,6 @@ if not selected_rows.empty:
             None
         )
 
-
         if pd.isna(value):
 
             display_value = "N/A"
@@ -817,7 +861,6 @@ if not selected_rows.empty:
         f"⚙️ Model Version: "
         f"{selected.get('model_version', 'N/A')}"
     )
-
 
 st.divider()
 
