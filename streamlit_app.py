@@ -932,7 +932,8 @@ history_df = history_df.rename(
         "down_pred": "DOWN Prediction",
         "up_prob": "UP Probability",
         "down_prob": "DOWN Probability",
-        "model_version": "Model Version"
+        "model_version": "Model Version",
+        "up_prob_change": "up_prob_change"
     }
 )
 
