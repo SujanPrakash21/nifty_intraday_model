@@ -284,7 +284,7 @@ st.set_page_config(
 # ============================================================
 
 st_autorefresh(
-    interval=5000,
+    interval=30000,
     key="data_refresh"
 )
 
