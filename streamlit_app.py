@@ -2,10 +2,6 @@ import streamlit as st
 import pandas as pd
 import gspread
 from google.oauth2.service_account import Credentials
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 # ============================================================
