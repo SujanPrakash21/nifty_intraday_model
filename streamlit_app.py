@@ -280,7 +280,7 @@ st.set_page_config(
 
 
 # ============================================================
-# AUTO REFRESH
+# AUTO REFRESH - EVERY 5 SECONDS
 # ============================================================
 
 st_autorefresh(
@@ -290,7 +290,7 @@ st_autorefresh(
 
 
 # ============================================================
-# GOOGLE SHEETS CONFIG
+# GOOGLE SHEETS AUTHENTICATION
 # ============================================================
 
 SCOPES = [
@@ -307,6 +307,10 @@ credentials = Credentials.from_service_account_info(
 
 gc = gspread.authorize(credentials)
 
+
+# ============================================================
+# GOOGLE SHEET
+# ============================================================
 
 GOOGLE_SHEET_ID = (
     "1EP2UEufBvnUtf8LxDpmjuT4lDQFVEGp2apLwFdtfod4"
@@ -363,19 +367,14 @@ df = df.sort_values(
 ).reset_index(drop=True)
 
 
-# ============================================================
-# NUMERIC COLUMNS
-# ============================================================
+# Convert numeric columns
 
-numeric_columns = [
+for column in [
     "up_prob",
     "down_prob",
     "up_pred",
     "down_pred"
-]
-
-
-for column in numeric_columns:
+]:
 
     if column in df.columns:
 
@@ -386,353 +385,29 @@ for column in numeric_columns:
 
 
 # ============================================================
-# CSS
+# TITLE
 # ============================================================
 
-st.markdown(
-    """
-    <style>
-
-    /* ========================================================
-       MAIN PAGE
-       ======================================================== */
-
-    .stApp {
-        background-color: #f5f7fb;
-    }
-
-    .block-container {
-        max-width: 1400px;
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-    }
-
-
-    /* ========================================================
-       HEADER
-       ======================================================== */
-
-    .dashboard-header {
-        background: linear-gradient(
-            135deg,
-            #111827 0%,
-            #1f2937 100%
-        );
-
-        border-radius: 16px;
-
-        padding: 28px 32px;
-
-        margin-bottom: 22px;
-
-        box-shadow:
-            0 8px 25px rgba(15, 23, 42, 0.12);
-    }
-
-
-    .dashboard-title {
-        color: #ffffff;
-
-        font-size: 30px;
-
-        font-weight: 750;
-
-        margin: 0;
-
-        letter-spacing: -0.5px;
-    }
-
-
-    .dashboard-subtitle {
-        color: #cbd5e1;
-
-        font-size: 14px;
-
-        margin-top: 7px;
-    }
-
-
-    .live-dot {
-        color: #22c55e;
-
-        font-weight: 700;
-    }
-
-
-    /* ========================================================
-       INFORMATION CARDS
-       ======================================================== */
-
-    .info-card {
-        background: #ffffff;
-
-        border: 1px solid #e5e7eb;
-
-        border-radius: 14px;
-
-        padding: 20px 22px;
-
-        min-height: 105px;
-
-        box-shadow:
-            0 3px 12px rgba(15, 23, 42, 0.05);
-    }
-
-
-    .info-label {
-        color: #64748b;
-
-        font-size: 12px;
-
-        font-weight: 700;
-
-        text-transform: uppercase;
-
-        letter-spacing: 0.6px;
-    }
-
-
-    .info-value {
-        color: #111827;
-
-        font-size: 23px;
-
-        font-weight: 750;
-
-        margin-top: 8px;
-    }
-
-
-    /* ========================================================
-       SECTION TITLE
-       ======================================================== */
-
-    .section-title {
-        color: #111827;
-
-        font-size: 20px;
-
-        font-weight: 750;
-
-        margin-top: 28px;
-
-        margin-bottom: 14px;
-    }
-
-
-    /* ========================================================
-       PREDICTION CARDS
-       ======================================================== */
-
-    .prediction-card-up {
-
-        background: linear-gradient(
-            135deg,
-            #ecfdf5,
-            #f0fdf4
-        );
-
-        border: 1px solid #a7f3d0;
-
-        border-radius: 16px;
-
-        padding: 25px;
-
-        box-shadow:
-            0 5px 16px rgba(16, 185, 129, 0.08);
-    }
-
-
-    .prediction-card-down {
-
-        background: linear-gradient(
-            135deg,
-            #fff1f2,
-            #fef2f2
-        );
-
-        border: 1px solid #fecdd3;
-
-        border-radius: 16px;
-
-        padding: 25px;
-
-        box-shadow:
-            0 5px 16px rgba(239, 68, 68, 0.08);
-    }
-
-
-    .prediction-heading {
-
-        font-size: 14px;
-
-        font-weight: 750;
-
-        color: #475569;
-
-        text-transform: uppercase;
-
-        letter-spacing: 0.5px;
-    }
-
-
-    .up-probability {
-
-        color: #059669;
-
-        font-size: 36px;
-
-        font-weight: 800;
-
-        margin-top: 12px;
-    }
-
-
-    .down-probability {
-
-        color: #dc2626;
-
-        font-size: 36px;
-
-        font-weight: 800;
-
-        margin-top: 12px;
-    }
-
-
-    .up-status {
-
-        color: #047857;
-
-        font-size: 15px;
-
-        font-weight: 700;
-
-        margin-top: 4px;
-    }
-
-
-    .down-status {
-
-        color: #b91c1c;
-
-        font-size: 15px;
-
-        font-weight: 700;
-
-        margin-top: 4px;
-    }
-
-
-    /* ========================================================
-       MODEL VERSION
-       ======================================================== */
-
-    .model-version {
-
-        display: inline-block;
-
-        background: #ffffff;
-
-        border: 1px solid #e2e8f0;
-
-        color: #64748b;
-
-        border-radius: 20px;
-
-        padding: 7px 13px;
-
-        font-size: 12px;
-
-        margin-top: 15px;
-    }
-
-
-    /* ========================================================
-       SELECTED PREDICTION
-       ======================================================== */
-
-    .selected-box {
-
-        background: #ffffff;
-
-        border: 1px solid #e5e7eb;
-
-        border-radius: 14px;
-
-        padding: 18px;
-
-        box-shadow:
-            0 3px 12px rgba(15, 23, 42, 0.04);
-    }
-
-
-    /* ========================================================
-       FOOTER
-       ======================================================== */
-
-    .footer {
-
-        text-align: center;
-
-        color: #94a3b8;
-
-        font-size: 11px;
-
-        margin-top: 35px;
-
-        padding-top: 15px;
-
-        border-top: 1px solid #e2e8f0;
-    }
-
-    </style>
-    """,
-    unsafe_allow_html=True
+st.title(
+    "📈 NIFTY Intraday Model Dashboard"
 )
 
+st.caption(
+    "Morning & Afternoon Model Predictions"
+)
+
+st.divider()
+
 
 # ============================================================
-# LATEST DATA
+# LATEST ROW
 # ============================================================
 
 latest = df.iloc[0]
 
 
 # ============================================================
-# HEADER
-# ============================================================
-
-st.markdown(
-    """
-    <div class="dashboard-header">
-
-        <div class="dashboard-title">
-            📈 NIFTY Intraday Model Dashboard
-        </div>
-
-        <div class="dashboard-subtitle">
-
-            Morning & Afternoon Model Predictions
-
-            &nbsp; • &nbsp;
-
-            <span class="live-dot">● LIVE</span>
-
-            &nbsp; • &nbsp;
-
-            Auto-refresh every 5 seconds
-
-        </div>
-
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-
-# ============================================================
-# TOP INFORMATION CARDS
+# TOP INFORMATION
 # ============================================================
 
 col1, col2, col3 = st.columns(3)
@@ -740,61 +415,27 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
 
-    st.markdown(
-        f"""
-        <div class="info-card">
-
-            <div class="info-label">
-                Symbol
-            </div>
-
-            <div class="info-value">
-                {latest["symbol"]}
-            </div>
-
-        </div>
-        """,
-        unsafe_allow_html=True
+    st.metric(
+        "Symbol",
+        latest["symbol"]
     )
 
 
 with col2:
 
-    st.markdown(
-        f"""
-        <div class="info-card">
-
-            <div class="info-label">
-                Session
-            </div>
-
-            <div class="info-value">
-                {latest["session"]}
-            </div>
-
-        </div>
-        """,
-        unsafe_allow_html=True
+    st.metric(
+        "Session",
+        latest["session"]
     )
 
 
 with col3:
 
-    st.markdown(
-        f"""
-        <div class="info-card">
-
-            <div class="info-label">
-                Latest Datetime
-            </div>
-
-            <div class="info-value">
-                {latest["datetime"].strftime("%d %b %Y %H:%M")}
-            </div>
-
-        </div>
-        """,
-        unsafe_allow_html=True
+    st.metric(
+        "Latest Datetime",
+        latest["datetime"].strftime(
+            "%d %b %Y %H:%M"
+        )
     )
 
 
@@ -802,24 +443,19 @@ with col3:
 # LATEST PREDICTION
 # ============================================================
 
-st.markdown(
-    """
-    <div class="section-title">
-        Latest Prediction
-    </div>
-    """,
-    unsafe_allow_html=True
+st.subheader(
+    "Latest Prediction"
 )
 
 
-p1, p2 = st.columns(2)
+c1, c2 = st.columns(2)
 
 
 # ============================================================
 # UP MODEL
 # ============================================================
 
-with p1:
+with c1:
 
     up_prob = latest.get(
         "up_prob",
@@ -829,11 +465,11 @@ with p1:
 
     if pd.isna(up_prob):
 
-        up_probability = "N/A"
+        up_value = "N/A"
 
     else:
 
-        up_probability = (
+        up_value = (
             f"{float(up_prob):.2%}"
         )
 
@@ -846,36 +482,31 @@ with p1:
 
     if pd.isna(up_pred):
 
-        up_status = "N/A"
+        up_prediction = "N/A"
 
     elif int(float(up_pred)) == 1:
 
-        up_status = "UP"
+        up_prediction = "UP"
 
     else:
 
-        up_status = "NO UP"
+        up_prediction = "NO UP"
 
 
-    st.markdown(
-        f"""
-        <div class="prediction-card-up">
+    st.success(
+        "🟢 UP MODEL"
+    )
 
-            <div class="prediction-heading">
-                🟢 UP MODEL
-            </div>
 
-            <div class="up-probability">
-                {up_probability}
-            </div>
+    st.metric(
+        "UP Probability",
+        up_value
+    )
 
-            <div class="up-status">
-                Prediction: {up_status}
-            </div>
 
-        </div>
-        """,
-        unsafe_allow_html=True
+    st.metric(
+        "UP Prediction",
+        up_prediction
     )
 
 
@@ -883,7 +514,7 @@ with p1:
 # DOWN MODEL
 # ============================================================
 
-with p2:
+with c2:
 
     down_prob = latest.get(
         "down_prob",
@@ -893,11 +524,11 @@ with p2:
 
     if pd.isna(down_prob):
 
-        down_probability = "N/A"
+        down_value = "N/A"
 
     else:
 
-        down_probability = (
+        down_value = (
             f"{float(down_prob):.2%}"
         )
 
@@ -910,79 +541,50 @@ with p2:
 
     if pd.isna(down_pred):
 
-        down_status = "N/A"
+        down_prediction = "N/A"
 
     elif int(float(down_pred)) == 1:
 
-        down_status = "DOWN"
+        down_prediction = "DOWN"
 
     else:
 
-        down_status = "NO DOWN"
+        down_prediction = "NO DOWN"
 
 
-    st.markdown(
-        f"""
-        <div class="prediction-card-down">
-
-            <div class="prediction-heading">
-                🔴 DOWN MODEL
-            </div>
-
-            <div class="down-probability">
-                {down_probability}
-            </div>
-
-            <div class="down-status">
-                Prediction: {down_status}
-            </div>
-
-        </div>
-        """,
-        unsafe_allow_html=True
+    st.error(
+        "🔴 DOWN MODEL"
     )
 
 
-# ============================================================
-# MODEL VERSION
-# ============================================================
+    st.metric(
+        "DOWN Probability",
+        down_value
+    )
 
-model_version = latest.get(
-    "model_version",
-    "N/A"
+
+    st.metric(
+        "DOWN Prediction",
+        down_prediction
+    )
+
+
+st.caption(
+    f"⚙️ Model Version: {latest.get('model_version', 'N/A')}"
 )
 
 
-st.markdown(
-    f"""
-    <div class="model-version">
-        ⚙️ Model Version: <b>{model_version}</b>
-    </div>
-    """,
-    unsafe_allow_html=True
+st.divider()
+
+
+# ============================================================
+# FILTER
+# ============================================================
+
+st.subheader(
+    "🔎 Prediction Filter"
 )
 
-
-# ============================================================
-# FILTER SECTION
-# ============================================================
-
-st.markdown(
-    """
-    <div class="section-title">
-        Prediction Filter
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-
-filter_col1, filter_col2 = st.columns(2)
-
-
-# ============================================================
-# DATE DROPDOWN
-# ============================================================
 
 df["date_only"] = df["datetime"].dt.date
 
@@ -993,10 +595,17 @@ available_dates = sorted(
 )
 
 
+filter_col1, filter_col2 = st.columns(2)
+
+
+# ============================================================
+# DATE DROPDOWN
+# ============================================================
+
 with filter_col1:
 
     selected_date = st.selectbox(
-        "Select Date",
+        "Date",
         available_dates,
         index=0,
         format_func=lambda x:
@@ -1005,7 +614,7 @@ with filter_col1:
 
 
 # ============================================================
-# FILTER BY DATE
+# FILTER DATE
 # ============================================================
 
 date_df = df[
@@ -1013,20 +622,20 @@ date_df = df[
 ].copy()
 
 
-available_datetimes = sorted(
-    date_df["datetime"].dropna().unique(),
-    reverse=True
-)
-
-
 # ============================================================
 # DATETIME DROPDOWN
 # ============================================================
 
+available_datetimes = sorted(
+    date_df["datetime"].unique(),
+    reverse=True
+)
+
+
 with filter_col2:
 
     selected_datetime = st.selectbox(
-        "Select Datetime",
+        "Datetime",
         available_datetimes,
         index=0,
         format_func=lambda x:
@@ -1048,18 +657,13 @@ if not selected_rows.empty:
     selected = selected_rows.iloc[0]
 
 
-    st.markdown(
-        """
-        <div class="section-title">
-            Selected Prediction
-        </div>
-        """,
-        unsafe_allow_html=True
+    st.subheader(
+        "Selected Prediction"
     )
 
 
     # --------------------------------------------------------
-    # Selected top cards
+    # BASIC INFORMATION
     # --------------------------------------------------------
 
     s1, s2, s3 = st.columns(3)
@@ -1092,7 +696,7 @@ if not selected_rows.empty:
 
 
     # --------------------------------------------------------
-    # Selected probabilities
+    # PROBABILITIES
     # --------------------------------------------------------
 
     s4, s5 = st.columns(2)
@@ -1100,56 +704,56 @@ if not selected_rows.empty:
 
     with s4:
 
-        selected_up_prob = selected.get(
+        value = selected.get(
             "up_prob",
             None
         )
 
 
-        if pd.isna(selected_up_prob):
+        if pd.isna(value):
 
-            value = "N/A"
+            display_value = "N/A"
 
         else:
 
-            value = (
-                f"{float(selected_up_prob):.2%}"
+            display_value = (
+                f"{float(value):.2%}"
             )
 
 
         st.metric(
-            "UP Probability",
-            value
+            "🟢 UP Probability",
+            display_value
         )
 
 
     with s5:
 
-        selected_down_prob = selected.get(
+        value = selected.get(
             "down_prob",
             None
         )
 
 
-        if pd.isna(selected_down_prob):
+        if pd.isna(value):
 
-            value = "N/A"
+            display_value = "N/A"
 
         else:
 
-            value = (
-                f"{float(selected_down_prob):.2%}"
+            display_value = (
+                f"{float(value):.2%}"
             )
 
 
         st.metric(
-            "DOWN Probability",
-            value
+            "🔴 DOWN Probability",
+            display_value
         )
 
 
     # --------------------------------------------------------
-    # Selected predictions
+    # PREDICTIONS
     # --------------------------------------------------------
 
     s6, s7 = st.columns(2)
@@ -1157,69 +761,73 @@ if not selected_rows.empty:
 
     with s6:
 
-        selected_up_pred = selected.get(
+        value = selected.get(
             "up_pred",
             None
         )
 
 
-        if pd.isna(selected_up_pred):
+        if pd.isna(value):
 
-            value = "N/A"
+            display_value = "N/A"
 
-        elif int(float(selected_up_pred)) == 1:
+        elif int(float(value)) == 1:
 
-            value = "UP"
+            display_value = "UP"
 
         else:
 
-            value = "NO UP"
+            display_value = "NO UP"
 
 
         st.metric(
             "UP Prediction",
-            value
+            display_value
         )
 
 
     with s7:
 
-        selected_down_pred = selected.get(
+        value = selected.get(
             "down_pred",
             None
         )
 
 
-        if pd.isna(selected_down_pred):
+        if pd.isna(value):
 
-            value = "N/A"
+            display_value = "N/A"
 
-        elif int(float(selected_down_pred)) == 1:
+        elif int(float(value)) == 1:
 
-            value = "DOWN"
+            display_value = "DOWN"
 
         else:
 
-            value = "NO DOWN"
+            display_value = "NO DOWN"
 
 
         st.metric(
             "DOWN Prediction",
-            value
+            display_value
         )
+
+
+    st.caption(
+        f"⚙️ Model Version: "
+        f"{selected.get('model_version', 'N/A')}"
+    )
+
+
+st.divider()
 
 
 # ============================================================
 # PREDICTION HISTORY
 # ============================================================
 
-st.markdown(
-    """
-    <div class="section-title">
-        Prediction History
-    </div>
-    """,
-    unsafe_allow_html=True
+st.subheader(
+    "📊 Prediction History"
 )
 
 
@@ -1238,7 +846,9 @@ history_df = history_df.drop(
 
 history_df["datetime"] = (
     history_df["datetime"]
-    .dt.strftime("%d %b %Y %H:%M")
+    .dt.strftime(
+        "%d %b %Y %H:%M"
+    )
 )
 
 
@@ -1285,7 +895,7 @@ history_df = history_df.rename(
 
 
 # ============================================================
-# ORDER COLUMNS
+# SELECT COLUMNS
 # ============================================================
 
 history_columns = [
@@ -1310,7 +920,7 @@ history_df = history_df[
 
 
 # ============================================================
-# DISPLAY HISTORY
+# DISPLAY TABLE
 # ============================================================
 
 st.dataframe(
@@ -1325,15 +935,9 @@ st.dataframe(
 # FOOTER
 # ============================================================
 
-st.markdown(
-    """
-    <div class="footer">
-        NIFTY Intraday Prediction System
-        &nbsp; • &nbsp;
-        Live Google Sheets Data
-        &nbsp; • &nbsp;
-        Auto-refresh: 5 seconds
-    </div>
-    """,
-    unsafe_allow_html=True
+st.divider()
+
+st.caption(
+    "🔄 Live Google Sheets Data • "
+    "Dashboard refreshes every 5 seconds"
 )
