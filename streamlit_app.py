@@ -280,7 +280,7 @@ st.set_page_config(
 
 
 # ============================================================
-# AUTO REFRESH - EVERY 5 SECONDS
+# AUTO REFRESH
 # ============================================================
 
 st_autorefresh(
@@ -290,289 +290,7 @@ st_autorefresh(
 
 
 # ============================================================
-# CUSTOM CSS
-# ============================================================
-
-st.markdown(
-    """
-<style>
-
-    /* =========================
-       PAGE
-       ========================= */
-
-    .stApp {
-        background: #f4f6f9;
-    }
-
-    .block-container {
-        padding-top: 1.5rem;
-        padding-bottom: 2rem;
-        max-width: 1400px;
-    }
-
-
-    /* =========================
-       HEADER
-       ========================= */
-
-    .dashboard-header {
-        background: linear-gradient(
-            135deg,
-            #111827 0%,
-            #1f2937 100%
-        );
-
-        padding: 24px 28px;
-
-        border-radius: 14px;
-
-        margin-bottom: 22px;
-
-        box-shadow:
-            0 6px 20px rgba(0,0,0,0.10);
-    }
-
-    .dashboard-title {
-        color: #ffffff;
-        font-size: 30px;
-        font-weight: 750;
-        margin: 0;
-        line-height: 1.2;
-    }
-
-    .dashboard-subtitle {
-        color: #cbd5e1;
-        font-size: 14px;
-        margin-top: 7px;
-    }
-
-    .live-dot {
-        color: #22c55e;
-        font-weight: 700;
-    }
-
-
-    /* =========================
-       TOP INFO CARDS
-       ========================= */
-
-    .info-card {
-        background: #ffffff;
-
-        border: 1px solid #e5e7eb;
-
-        border-radius: 12px;
-
-        padding: 18px 20px;
-
-        box-shadow:
-            0 3px 12px rgba(0,0,0,0.04);
-
-        height: 100px;
-    }
-
-    .info-label {
-        color: #6b7280;
-
-        font-size: 12px;
-
-        font-weight: 700;
-
-        letter-spacing: 0.5px;
-
-        text-transform: uppercase;
-
-        margin-bottom: 9px;
-    }
-
-    .info-value {
-        color: #111827;
-
-        font-size: 21px;
-
-        font-weight: 750;
-    }
-
-
-    /* =========================
-       SECTION TITLE
-       ========================= */
-
-    .section-title {
-        color: #111827;
-
-        font-size: 20px;
-
-        font-weight: 750;
-
-        margin-top: 28px;
-
-        margin-bottom: 14px;
-    }
-
-
-    /* =========================
-       UP / DOWN CARDS
-       ========================= */
-
-    .prediction-card {
-
-        border-radius: 14px;
-
-        padding: 22px 24px;
-
-        min-height: 155px;
-
-        box-shadow:
-            0 5px 16px rgba(0,0,0,0.05);
-    }
-
-
-    .up-card {
-
-        background: linear-gradient(
-            135deg,
-            #ecfdf5,
-            #d1fae5
-        );
-
-        border: 1px solid #a7f3d0;
-    }
-
-
-    .down-card {
-
-        background: linear-gradient(
-            135deg,
-            #fff1f2,
-            #ffe4e6
-        );
-
-        border: 1px solid #fecdd3;
-    }
-
-
-    .prediction-header {
-
-        font-size: 13px;
-
-        font-weight: 750;
-
-        color: #4b5563;
-
-        margin-bottom: 12px;
-    }
-
-
-    .prediction-main {
-
-        font-size: 29px;
-
-        font-weight: 800;
-
-        margin-bottom: 8px;
-    }
-
-
-    .up-main {
-        color: #059669;
-    }
-
-
-    .down-main {
-        color: #dc2626;
-    }
-
-
-    .prediction-probability {
-
-        font-size: 17px;
-
-        font-weight: 700;
-    }
-
-
-    .up-probability {
-        color: #047857;
-    }
-
-
-    .down-probability {
-        color: #b91c1c;
-    }
-
-
-    /* =========================
-       MODEL VERSION
-       ========================= */
-
-    .model-version {
-
-        display: inline-block;
-
-        background: #ffffff;
-
-        border: 1px solid #e5e7eb;
-
-        border-radius: 8px;
-
-        padding: 7px 12px;
-
-        margin-top: 12px;
-
-        color: #6b7280;
-
-        font-size: 12px;
-    }
-
-
-    /* =========================
-       TABLE
-       ========================= */
-
-    .history-container {
-
-        background: #ffffff;
-
-        border-radius: 12px;
-
-        padding: 4px;
-
-        border: 1px solid #e5e7eb;
-
-        box-shadow:
-            0 3px 12px rgba(0,0,0,0.04);
-    }
-
-
-    /* =========================
-       FOOTER
-       ========================= */
-
-    .footer {
-
-        text-align: center;
-
-        color: #9ca3af;
-
-        font-size: 11px;
-
-        margin-top: 24px;
-
-        padding-top: 12px;
-
-        border-top: 1px solid #e5e7eb;
-    }
-
-</style>
-""",
-    unsafe_allow_html=True
-)
-
-
-# ============================================================
-# GOOGLE AUTHENTICATION
+# GOOGLE SHEETS CONFIG
 # ============================================================
 
 SCOPES = [
@@ -590,10 +308,6 @@ credentials = Credentials.from_service_account_info(
 gc = gspread.authorize(credentials)
 
 
-# ============================================================
-# GOOGLE SHEET
-# ============================================================
-
 GOOGLE_SHEET_ID = (
     "1EP2UEufBvnUtf8LxDpmjuT4lDQFVEGp2apLwFdtfod4"
 )
@@ -604,7 +318,6 @@ GOOGLE_SHEET_TAB = "Predictions"
 spreadsheet = gc.open_by_key(
     GOOGLE_SHEET_ID
 )
-
 
 sheet = spreadsheet.worksheet(
     GOOGLE_SHEET_TAB
@@ -647,20 +360,343 @@ df = df.dropna(
 df = df.sort_values(
     "datetime",
     ascending=False
-)
+).reset_index(drop=True)
 
 
-for col in [
+# ============================================================
+# NUMERIC COLUMNS
+# ============================================================
+
+numeric_columns = [
     "up_prob",
     "down_prob",
     "up_pred",
     "down_pred"
-]:
+]
 
-    df[col] = pd.to_numeric(
-        df[col],
-        errors="coerce"
-    )
+
+for column in numeric_columns:
+
+    if column in df.columns:
+
+        df[column] = pd.to_numeric(
+            df[column],
+            errors="coerce"
+        )
+
+
+# ============================================================
+# CSS
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+
+    /* ========================================================
+       MAIN PAGE
+       ======================================================== */
+
+    .stApp {
+        background-color: #f5f7fb;
+    }
+
+    .block-container {
+        max-width: 1400px;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+
+    /* ========================================================
+       HEADER
+       ======================================================== */
+
+    .dashboard-header {
+        background: linear-gradient(
+            135deg,
+            #111827 0%,
+            #1f2937 100%
+        );
+
+        border-radius: 16px;
+
+        padding: 28px 32px;
+
+        margin-bottom: 22px;
+
+        box-shadow:
+            0 8px 25px rgba(15, 23, 42, 0.12);
+    }
+
+
+    .dashboard-title {
+        color: #ffffff;
+
+        font-size: 30px;
+
+        font-weight: 750;
+
+        margin: 0;
+
+        letter-spacing: -0.5px;
+    }
+
+
+    .dashboard-subtitle {
+        color: #cbd5e1;
+
+        font-size: 14px;
+
+        margin-top: 7px;
+    }
+
+
+    .live-dot {
+        color: #22c55e;
+
+        font-weight: 700;
+    }
+
+
+    /* ========================================================
+       INFORMATION CARDS
+       ======================================================== */
+
+    .info-card {
+        background: #ffffff;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 14px;
+
+        padding: 20px 22px;
+
+        min-height: 105px;
+
+        box-shadow:
+            0 3px 12px rgba(15, 23, 42, 0.05);
+    }
+
+
+    .info-label {
+        color: #64748b;
+
+        font-size: 12px;
+
+        font-weight: 700;
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.6px;
+    }
+
+
+    .info-value {
+        color: #111827;
+
+        font-size: 23px;
+
+        font-weight: 750;
+
+        margin-top: 8px;
+    }
+
+
+    /* ========================================================
+       SECTION TITLE
+       ======================================================== */
+
+    .section-title {
+        color: #111827;
+
+        font-size: 20px;
+
+        font-weight: 750;
+
+        margin-top: 28px;
+
+        margin-bottom: 14px;
+    }
+
+
+    /* ========================================================
+       PREDICTION CARDS
+       ======================================================== */
+
+    .prediction-card-up {
+
+        background: linear-gradient(
+            135deg,
+            #ecfdf5,
+            #f0fdf4
+        );
+
+        border: 1px solid #a7f3d0;
+
+        border-radius: 16px;
+
+        padding: 25px;
+
+        box-shadow:
+            0 5px 16px rgba(16, 185, 129, 0.08);
+    }
+
+
+    .prediction-card-down {
+
+        background: linear-gradient(
+            135deg,
+            #fff1f2,
+            #fef2f2
+        );
+
+        border: 1px solid #fecdd3;
+
+        border-radius: 16px;
+
+        padding: 25px;
+
+        box-shadow:
+            0 5px 16px rgba(239, 68, 68, 0.08);
+    }
+
+
+    .prediction-heading {
+
+        font-size: 14px;
+
+        font-weight: 750;
+
+        color: #475569;
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.5px;
+    }
+
+
+    .up-probability {
+
+        color: #059669;
+
+        font-size: 36px;
+
+        font-weight: 800;
+
+        margin-top: 12px;
+    }
+
+
+    .down-probability {
+
+        color: #dc2626;
+
+        font-size: 36px;
+
+        font-weight: 800;
+
+        margin-top: 12px;
+    }
+
+
+    .up-status {
+
+        color: #047857;
+
+        font-size: 15px;
+
+        font-weight: 700;
+
+        margin-top: 4px;
+    }
+
+
+    .down-status {
+
+        color: #b91c1c;
+
+        font-size: 15px;
+
+        font-weight: 700;
+
+        margin-top: 4px;
+    }
+
+
+    /* ========================================================
+       MODEL VERSION
+       ======================================================== */
+
+    .model-version {
+
+        display: inline-block;
+
+        background: #ffffff;
+
+        border: 1px solid #e2e8f0;
+
+        color: #64748b;
+
+        border-radius: 20px;
+
+        padding: 7px 13px;
+
+        font-size: 12px;
+
+        margin-top: 15px;
+    }
+
+
+    /* ========================================================
+       SELECTED PREDICTION
+       ======================================================== */
+
+    .selected-box {
+
+        background: #ffffff;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 14px;
+
+        padding: 18px;
+
+        box-shadow:
+            0 3px 12px rgba(15, 23, 42, 0.04);
+    }
+
+
+    /* ========================================================
+       FOOTER
+       ======================================================== */
+
+    .footer {
+
+        text-align: center;
+
+        color: #94a3b8;
+
+        font-size: 11px;
+
+        margin-top: 35px;
+
+        padding-top: 15px;
+
+        border-top: 1px solid #e2e8f0;
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
+# ============================================================
+# LATEST DATA
+# ============================================================
+
+latest = df.iloc[0]
 
 
 # ============================================================
@@ -669,34 +705,34 @@ for col in [
 
 st.markdown(
     """
-<div class="dashboard-header">
+    <div class="dashboard-header">
 
-    <div class="dashboard-title">
-        📈 NIFTY Intraday Model Dashboard
+        <div class="dashboard-title">
+            📈 NIFTY Intraday Model Dashboard
+        </div>
+
+        <div class="dashboard-subtitle">
+
+            Morning & Afternoon Model Predictions
+
+            &nbsp; • &nbsp;
+
+            <span class="live-dot">● LIVE</span>
+
+            &nbsp; • &nbsp;
+
+            Auto-refresh every 5 seconds
+
+        </div>
+
     </div>
-
-    <div class="dashboard-subtitle">
-        <span class="live-dot">● LIVE</span>
-        &nbsp;&nbsp; Morning & Afternoon Model Predictions
-        &nbsp; • &nbsp;
-        Auto-refresh every 5 seconds
-    </div>
-
-</div>
-""",
+    """,
     unsafe_allow_html=True
 )
 
 
 # ============================================================
-# LATEST ROW
-# ============================================================
-
-latest = df.iloc[0]
-
-
-# ============================================================
-# TOP INFORMATION
+# TOP INFORMATION CARDS
 # ============================================================
 
 col1, col2, col3 = st.columns(3)
@@ -706,18 +742,18 @@ with col1:
 
     st.markdown(
         f"""
-<div class="info-card">
+        <div class="info-card">
 
-    <div class="info-label">
-        Symbol
-    </div>
+            <div class="info-label">
+                Symbol
+            </div>
 
-    <div class="info-value">
-        {latest["symbol"]}
-    </div>
+            <div class="info-value">
+                {latest["symbol"]}
+            </div>
 
-</div>
-""",
+        </div>
+        """,
         unsafe_allow_html=True
     )
 
@@ -726,18 +762,18 @@ with col2:
 
     st.markdown(
         f"""
-<div class="info-card">
+        <div class="info-card">
 
-    <div class="info-label">
-        Session
-    </div>
+            <div class="info-label">
+                Session
+            </div>
 
-    <div class="info-value">
-        {latest["session"]}
-    </div>
+            <div class="info-value">
+                {latest["session"]}
+            </div>
 
-</div>
-""",
+        </div>
+        """,
         unsafe_allow_html=True
     )
 
@@ -746,18 +782,18 @@ with col3:
 
     st.markdown(
         f"""
-<div class="info-card">
+        <div class="info-card">
 
-    <div class="info-label">
-        Latest Datetime
-    </div>
+            <div class="info-label">
+                Latest Datetime
+            </div>
 
-    <div class="info-value">
-        {latest["datetime"].strftime("%d %b %Y %H:%M")}
-    </div>
+            <div class="info-value">
+                {latest["datetime"].strftime("%d %b %Y %H:%M")}
+            </div>
 
-</div>
-""",
+        </div>
+        """,
         unsafe_allow_html=True
     )
 
@@ -767,21 +803,29 @@ with col3:
 # ============================================================
 
 st.markdown(
-    '<div class="section-title">Latest Prediction</div>',
+    """
+    <div class="section-title">
+        Latest Prediction
+    </div>
+    """,
     unsafe_allow_html=True
 )
 
 
-c1, c2 = st.columns(2)
+p1, p2 = st.columns(2)
 
 
 # ============================================================
 # UP MODEL
 # ============================================================
 
-with c1:
+with p1:
 
-    up_prob = latest["up_prob"]
+    up_prob = latest.get(
+        "up_prob",
+        None
+    )
+
 
     if pd.isna(up_prob):
 
@@ -790,44 +834,47 @@ with c1:
     else:
 
         up_probability = (
-            f"{up_prob:.2%}"
+            f"{float(up_prob):.2%}"
         )
 
 
-    up_pred = latest["up_pred"]
+    up_pred = latest.get(
+        "up_pred",
+        None
+    )
 
 
     if pd.isna(up_pred):
 
-        up_prediction = "N/A"
+        up_status = "N/A"
 
     elif int(float(up_pred)) == 1:
 
-        up_prediction = "UP"
+        up_status = "UP"
 
     else:
 
-        up_prediction = "NO UP"
+        up_status = "NO UP"
 
 
     st.markdown(
         f"""
-<div class="prediction-card up-card">
+        <div class="prediction-card-up">
 
-    <div class="prediction-header">
-        🟢 &nbsp; UP MODEL
-    </div>
+            <div class="prediction-heading">
+                🟢 UP MODEL
+            </div>
 
-    <div class="prediction-main up-main">
-        {up_prediction}
-    </div>
+            <div class="up-probability">
+                {up_probability}
+            </div>
 
-    <div class="prediction-probability up-probability">
-        Probability &nbsp; {up_probability}
-    </div>
+            <div class="up-status">
+                Prediction: {up_status}
+            </div>
 
-</div>
-""",
+        </div>
+        """,
         unsafe_allow_html=True
     )
 
@@ -836,9 +883,12 @@ with c1:
 # DOWN MODEL
 # ============================================================
 
-with c2:
+with p2:
 
-    down_prob = latest["down_prob"]
+    down_prob = latest.get(
+        "down_prob",
+        None
+    )
 
 
     if pd.isna(down_prob):
@@ -848,44 +898,47 @@ with c2:
     else:
 
         down_probability = (
-            f"{down_prob:.2%}"
+            f"{float(down_prob):.2%}"
         )
 
 
-    down_pred = latest["down_pred"]
+    down_pred = latest.get(
+        "down_pred",
+        None
+    )
 
 
     if pd.isna(down_pred):
 
-        down_prediction = "N/A"
+        down_status = "N/A"
 
     elif int(float(down_pred)) == 1:
 
-        down_prediction = "DOWN"
+        down_status = "DOWN"
 
     else:
 
-        down_prediction = "NO DOWN"
+        down_status = "NO DOWN"
 
 
     st.markdown(
         f"""
-<div class="prediction-card down-card">
+        <div class="prediction-card-down">
 
-    <div class="prediction-header">
-        🔴 &nbsp; DOWN MODEL
-    </div>
+            <div class="prediction-heading">
+                🔴 DOWN MODEL
+            </div>
 
-    <div class="prediction-main down-main">
-        {down_prediction}
-    </div>
+            <div class="down-probability">
+                {down_probability}
+            </div>
 
-    <div class="prediction-probability down-probability">
-        Probability &nbsp; {down_probability}
-    </div>
+            <div class="down-status">
+                Prediction: {down_status}
+            </div>
 
-</div>
-""",
+        </div>
+        """,
         unsafe_allow_html=True
     )
 
@@ -894,15 +947,266 @@ with c2:
 # MODEL VERSION
 # ============================================================
 
+model_version = latest.get(
+    "model_version",
+    "N/A"
+)
+
+
 st.markdown(
     f"""
-<div class="model-version">
-    ⚙️ &nbsp; Model Version:
-    <strong>{latest["model_version"]}</strong>
-</div>
-""",
+    <div class="model-version">
+        ⚙️ Model Version: <b>{model_version}</b>
+    </div>
+    """,
     unsafe_allow_html=True
 )
+
+
+# ============================================================
+# FILTER SECTION
+# ============================================================
+
+st.markdown(
+    """
+    <div class="section-title">
+        Prediction Filter
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
+filter_col1, filter_col2 = st.columns(2)
+
+
+# ============================================================
+# DATE DROPDOWN
+# ============================================================
+
+df["date_only"] = df["datetime"].dt.date
+
+
+available_dates = sorted(
+    df["date_only"].dropna().unique(),
+    reverse=True
+)
+
+
+with filter_col1:
+
+    selected_date = st.selectbox(
+        "Select Date",
+        available_dates,
+        index=0,
+        format_func=lambda x:
+            x.strftime("%d %b %Y")
+    )
+
+
+# ============================================================
+# FILTER BY DATE
+# ============================================================
+
+date_df = df[
+    df["date_only"] == selected_date
+].copy()
+
+
+available_datetimes = sorted(
+    date_df["datetime"].dropna().unique(),
+    reverse=True
+)
+
+
+# ============================================================
+# DATETIME DROPDOWN
+# ============================================================
+
+with filter_col2:
+
+    selected_datetime = st.selectbox(
+        "Select Datetime",
+        available_datetimes,
+        index=0,
+        format_func=lambda x:
+            x.strftime("%d %b %Y %H:%M")
+    )
+
+
+# ============================================================
+# SELECTED ROW
+# ============================================================
+
+selected_rows = date_df[
+    date_df["datetime"] == selected_datetime
+]
+
+
+if not selected_rows.empty:
+
+    selected = selected_rows.iloc[0]
+
+
+    st.markdown(
+        """
+        <div class="section-title">
+            Selected Prediction
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+    # --------------------------------------------------------
+    # Selected top cards
+    # --------------------------------------------------------
+
+    s1, s2, s3 = st.columns(3)
+
+
+    with s1:
+
+        st.metric(
+            "Symbol",
+            selected["symbol"]
+        )
+
+
+    with s2:
+
+        st.metric(
+            "Session",
+            selected["session"]
+        )
+
+
+    with s3:
+
+        st.metric(
+            "Datetime",
+            selected["datetime"].strftime(
+                "%d %b %Y %H:%M"
+            )
+        )
+
+
+    # --------------------------------------------------------
+    # Selected probabilities
+    # --------------------------------------------------------
+
+    s4, s5 = st.columns(2)
+
+
+    with s4:
+
+        selected_up_prob = selected.get(
+            "up_prob",
+            None
+        )
+
+
+        if pd.isna(selected_up_prob):
+
+            value = "N/A"
+
+        else:
+
+            value = (
+                f"{float(selected_up_prob):.2%}"
+            )
+
+
+        st.metric(
+            "UP Probability",
+            value
+        )
+
+
+    with s5:
+
+        selected_down_prob = selected.get(
+            "down_prob",
+            None
+        )
+
+
+        if pd.isna(selected_down_prob):
+
+            value = "N/A"
+
+        else:
+
+            value = (
+                f"{float(selected_down_prob):.2%}"
+            )
+
+
+        st.metric(
+            "DOWN Probability",
+            value
+        )
+
+
+    # --------------------------------------------------------
+    # Selected predictions
+    # --------------------------------------------------------
+
+    s6, s7 = st.columns(2)
+
+
+    with s6:
+
+        selected_up_pred = selected.get(
+            "up_pred",
+            None
+        )
+
+
+        if pd.isna(selected_up_pred):
+
+            value = "N/A"
+
+        elif int(float(selected_up_pred)) == 1:
+
+            value = "UP"
+
+        else:
+
+            value = "NO UP"
+
+
+        st.metric(
+            "UP Prediction",
+            value
+        )
+
+
+    with s7:
+
+        selected_down_pred = selected.get(
+            "down_pred",
+            None
+        )
+
+
+        if pd.isna(selected_down_pred):
+
+            value = "N/A"
+
+        elif int(float(selected_down_pred)) == 1:
+
+            value = "DOWN"
+
+        else:
+
+            value = "NO DOWN"
+
+
+        st.metric(
+            "DOWN Prediction",
+            value
+        )
 
 
 # ============================================================
@@ -910,7 +1214,11 @@ st.markdown(
 # ============================================================
 
 st.markdown(
-    '<div class="section-title">Prediction History</div>',
+    """
+    <div class="section-title">
+        Prediction History
+    </div>
+    """,
     unsafe_allow_html=True
 )
 
@@ -918,14 +1226,48 @@ st.markdown(
 history_df = df.copy()
 
 
+# Remove helper column
+
+history_df = history_df.drop(
+    columns=["date_only"],
+    errors="ignore"
+)
+
+
+# Format datetime
+
 history_df["datetime"] = (
     history_df["datetime"]
     .dt.strftime("%d %b %Y %H:%M")
 )
 
 
+# Format probabilities
+
+history_df["up_prob"] = (
+    history_df["up_prob"]
+    .apply(
+        lambda x:
+        f"{float(x):.2%}"
+        if pd.notna(x)
+        else "N/A"
+    )
+)
+
+
+history_df["down_prob"] = (
+    history_df["down_prob"]
+    .apply(
+        lambda x:
+        f"{float(x):.2%}"
+        if pd.notna(x)
+        else "N/A"
+    )
+)
+
+
 # ============================================================
-# DISPLAY COLUMNS
+# RENAME COLUMNS
 # ============================================================
 
 history_df = history_df.rename(
@@ -943,52 +1285,39 @@ history_df = history_df.rename(
 
 
 # ============================================================
-# FORMAT PROBABILITIES
+# ORDER COLUMNS
 # ============================================================
 
-history_df["UP Probability"] = (
-    history_df["UP Probability"]
-    .apply(
-        lambda x:
-        f"{x:.2%}"
-        if pd.notna(x)
-        else "N/A"
-    )
-)
+history_columns = [
+    "Symbol",
+    "Datetime",
+    "Session",
+    "UP Prediction",
+    "DOWN Prediction",
+    "UP Probability",
+    "DOWN Probability",
+    "Model Version"
+]
 
 
-history_df["DOWN Probability"] = (
-    history_df["DOWN Probability"]
-    .apply(
-        lambda x:
-        f"{x:.2%}"
-        if pd.notna(x)
-        else "N/A"
-    )
-)
+history_df = history_df[
+    [
+        column
+        for column in history_columns
+        if column in history_df.columns
+    ]
+]
 
 
 # ============================================================
-# DISPLAY TABLE
+# DISPLAY HISTORY
 # ============================================================
-
-st.markdown(
-    '<div class="history-container">',
-    unsafe_allow_html=True
-)
-
 
 st.dataframe(
     history_df,
     use_container_width=True,
     hide_index=True,
-    height=500
-)
-
-
-st.markdown(
-    '</div>',
-    unsafe_allow_html=True
+    height=450
 )
 
 
@@ -998,13 +1327,13 @@ st.markdown(
 
 st.markdown(
     """
-<div class="footer">
-    NIFTY Intraday Prediction System
-    &nbsp; • &nbsp;
-    Google Sheets Data
-    &nbsp; • &nbsp;
-    Auto-refresh: 5 seconds
-</div>
-""",
+    <div class="footer">
+        NIFTY Intraday Prediction System
+        &nbsp; • &nbsp;
+        Live Google Sheets Data
+        &nbsp; • &nbsp;
+        Auto-refresh: 5 seconds
+    </div>
+    """,
     unsafe_allow_html=True
 )
