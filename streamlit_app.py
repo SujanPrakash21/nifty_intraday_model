@@ -2275,7 +2275,7 @@ with down_column:
             f"## {down_probability_display}\n\n"
             f"**DOWN Prediction**\n\n"
             # f"## 🔴 DOWN PREDICTION ⬇️"
-            f"{down_prediction_text}
+            f"{down_prediction_text}"
         )
 
         st.error(
