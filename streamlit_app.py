@@ -1386,20 +1386,20 @@ else:
 
 if up_pred_value == 1:
 
-    up_prediction_text = "UP"
+    up_prediction_text = "🟢🟢🟢 UP PREDICTION ⬆️🤑🟢🟢"
 
 else:
 
-    up_prediction_text = "NO UP"
+    up_prediction_text = "NO UP PREDICTION  ❌"
 
 
 if down_pred_value == 1:
 
-    down_prediction_text = "DOWN"
+    down_prediction_text = "🔴🔴🔴 DOWN PREDICTION ⬇️🚨🔴🔴"
 
 else:
 
-    down_prediction_text = "NO DOWN"
+    down_prediction_text = "NO DOWN PREDICTION  ❌"
 
 
 # ============================================================
