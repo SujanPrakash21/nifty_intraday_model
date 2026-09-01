@@ -1557,10 +1557,10 @@ with down_column:
 # MODEL VERSION
 # ============================================================
 
-st.caption(
-    f"⚙️ Model Version: "
-    f"{latest.get('model_version', 'N/A')}"
-)
+# st.caption(
+#     f"⚙️ Model Version: "
+#     f"{latest.get('model_version', 'N/A')}"
+# )
 
 
 st.divider()
