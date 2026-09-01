@@ -986,6 +986,797 @@
 # )
 
 
+# import streamlit as st
+# import pandas as pd
+# import gspread
+
+# from google.oauth2.service_account import Credentials
+# from streamlit_autorefresh import st_autorefresh
+
+
+# # ============================================================
+# # PAGE CONFIG
+# # ============================================================
+
+# st.set_page_config(
+#     page_title="NIFTY Model Dashboard",
+#     page_icon="📈",
+#     layout="wide"
+# )
+
+
+# # ============================================================
+# # AUTO REFRESH
+# # ============================================================
+
+# st_autorefresh(
+#     interval=30000,
+#     key="data_refresh"
+# )
+
+
+# # ============================================================
+# # THRESHOLD CONFIGURATION
+# #
+# # IMPORTANT:
+# # These are DISPLAY thresholds only.
+# #
+# # Streamlit DOES NOT calculate predictions using these values.
+# # Predictions are taken directly from Google Sheets:
+# #
+# # up_pred
+# # down_pred
+# #
+# # Keep these values exactly the same as the thresholds
+# # used inside your respective model codes.
+# # ============================================================
+
+# THRESHOLDS = {
+#     "Morning": {
+#         "up": 0.60,
+#         "down": 0.50
+#     },
+
+#     "Afternoon": {
+#         "up": 0.55,
+#         "down": 0.50
+#     }
+# }
+
+
+# # ============================================================
+# # GOOGLE SHEETS AUTHENTICATION
+# # ============================================================
+
+# SCOPES = [
+#     "https://www.googleapis.com/auth/spreadsheets",
+#     "https://www.googleapis.com/auth/drive"
+# ]
+
+
+# credentials = Credentials.from_service_account_info(
+#     dict(st.secrets["gcp_service_account"]),
+#     scopes=SCOPES
+# )
+
+
+# gc = gspread.authorize(credentials)
+
+
+# # ============================================================
+# # GOOGLE SHEET
+# # ============================================================
+
+# GOOGLE_SHEET_ID = (
+#     "1EP2UEufBvnUtf8LxDpmjuT4lDQFVEGp2apLwFdtfod4"
+# )
+
+# GOOGLE_SHEET_TAB = "Predictions"
+
+
+# spreadsheet = gc.open_by_key(
+#     GOOGLE_SHEET_ID
+# )
+
+
+# sheet = spreadsheet.worksheet(
+#     GOOGLE_SHEET_TAB
+# )
+
+
+# # ============================================================
+# # LOAD DATA
+# # ============================================================
+
+# records = sheet.get_all_records()
+
+# df = pd.DataFrame(records)
+
+
+# if df.empty:
+
+#     st.warning(
+#         "No prediction data available."
+#     )
+
+#     st.stop()
+
+
+# # ============================================================
+# # CLEAN DATA
+# # ============================================================
+
+# df["datetime"] = pd.to_datetime(
+#     df["datetime"],
+#     errors="coerce"
+# )
+
+
+# df = df.dropna(
+#     subset=["datetime"]
+# )
+
+
+# # ============================================================
+# # CONVERT NUMERIC COLUMNS
+# # ============================================================
+
+# numeric_columns = [
+#     "up_prob",
+#     "down_prob",
+#     "up_pred",
+#     "down_pred",
+#     "up_prob_change_15m",
+#     "up_prob_change_cumulative",
+#     "down_prob_change_15m",
+#     "down_prob_change_cumulative",
+#     "anchor_call_premium_0915",
+#     "anchor_call_premium_current",
+#     "anchor_call_change_15m",
+#     "anchor_call_change_cumulative",
+#     "anchor_put_premium_0915",
+#     "anchor_put_premium_current",
+#     "anchor_put_change_15m",
+#     "anchor_put_change_cumulative"
+# ]
+
+
+# for column in numeric_columns:
+
+#     if column in df.columns:
+
+#         df[column] = pd.to_numeric(
+#             df[column],
+#             errors="coerce"
+#         )
+
+
+# # ============================================================
+# # SORT DATA
+# #
+# # IMPORTANT:
+# #
+# # If Morning and Afternoon have the same datetime,
+# # Afternoon is treated as the latest session.
+# #
+# # Example:
+# #
+# # 31 Aug 15:15 Morning
+# # 31 Aug 15:15 Afternoon
+# #
+# # Afternoon will be displayed as the latest row.
+# # ============================================================
+
+# session_order = {
+#     "Afternoon": 0,
+#     "Morning": 1
+# }
+
+
+# df["_session_order"] = (
+#     df["session"]
+#     .astype(str)
+#     .map(session_order)
+#     .fillna(99)
+# )
+
+
+# df = df.sort_values(
+#     [
+#         "datetime",
+#         "_session_order"
+#     ],
+#     ascending=[
+#         False,
+#         True
+#     ]
+# ).reset_index(
+#     drop=True
+# )
+
+
+# # ============================================================
+# # LATEST ROW
+# # ============================================================
+
+# latest = df.iloc[0]
+
+
+# latest_session = str(
+#     latest.get(
+#         "session",
+#         ""
+#     )
+# ).strip()
+
+
+# # ============================================================
+# # GET THRESHOLDS
+# # ============================================================
+
+# session_thresholds = THRESHOLDS.get(
+#     latest_session,
+#     {
+#         "up": 0.60,
+#         "down": 0.50
+#     }
+# )
+
+
+# up_threshold = session_thresholds["up"]
+
+# down_threshold = session_thresholds["down"]
+
+
+# # ============================================================
+# # TITLE
+# # ============================================================
+
+# st.title(
+#     "📈 NIFTY Intraday Model Dashboard"
+# )
+
+
+# st.caption(
+#     "Morning & Afternoon Model Predictions"
+# )
+
+
+# st.divider()
+
+
+# # ============================================================
+# # TOP INFORMATION
+# # ============================================================
+
+# col1, col2, col3 = st.columns(3)
+
+
+# with col1:
+
+#     st.metric(
+#         "Symbol",
+#         latest.get(
+#             "symbol",
+#             "N/A"
+#         )
+#     )
+
+
+# with col2:
+
+#     st.metric(
+#         "Session",
+#         latest_session
+#     )
+
+
+# with col3:
+
+#     st.metric(
+#         "Latest Datetime",
+#         latest["datetime"].strftime(
+#             "%d %b %Y %H:%M"
+#         )
+#     )
+
+
+# st.divider()
+
+
+# # ============================================================
+# # LATEST PREDICTION
+# # ============================================================
+
+# st.subheader(
+#     "Latest Prediction"
+# )
+
+
+# # ============================================================
+# # GET PREDICTIONS FROM GOOGLE SHEETS
+# #
+# # IMPORTANT:
+# #
+# # We DO NOT calculate predictions here.
+# #
+# # The model already calculated:
+# #
+# # up_pred
+# # down_pred
+# #
+# # Streamlit only displays them.
+# # ============================================================
+
+# up_pred = latest.get(
+#     "up_pred",
+#     None
+# )
+
+
+# down_pred = latest.get(
+#     "down_pred",
+#     None
+# )
+
+
+# if pd.isna(up_pred):
+
+#     up_pred_value = 0
+
+# else:
+
+#     up_pred_value = int(
+#         float(up_pred)
+#     )
+
+
+# if pd.isna(down_pred):
+
+#     down_pred_value = 0
+
+# else:
+
+#     down_pred_value = int(
+#         float(down_pred)
+#     )
+
+
+# # ============================================================
+# # PROBABILITIES
+# # ============================================================
+
+# up_prob = latest.get(
+#     "up_prob",
+#     None
+# )
+
+
+# down_prob = latest.get(
+#     "down_prob",
+#     None
+# )
+
+
+# if pd.isna(up_prob):
+
+#     up_probability_display = "N/A"
+
+# else:
+
+#     up_probability_display = (
+#         f"{float(up_prob):.2%}"
+#     )
+
+
+# if pd.isna(down_prob):
+
+#     down_probability_display = "N/A"
+
+# else:
+
+#     down_probability_display = (
+#         f"{float(down_prob):.2%}"
+#     )
+
+
+# # ============================================================
+# # PREDICTION TEXT
+# # ============================================================
+
+# if up_pred_value == 1:
+
+#     up_prediction_text = "🟢🟢🟢 UP PREDICTION ⬆️🤑🟢🟢"
+
+# else:
+
+#     up_prediction_text = "NO UP PREDICTION  ❌"
+
+
+# if down_pred_value == 1:
+
+#     down_prediction_text = "🔴🔴🔴 DOWN PREDICTION ⬇️🚨🔴🔴"
+
+# else:
+
+#     down_prediction_text = "NO DOWN PREDICTION  ❌"
+
+
+# # ============================================================
+# # COLOR LOGIC
+# #
+# # ONLY ONE ACTIVE:
+# #
+# # UP = 1 and DOWN = 0
+# #     -> UP section GREEN
+# #
+# # UP = 0 and DOWN = 1
+# #     -> DOWN section RED
+# #
+# # BOTH 0
+# #     -> NORMAL
+# #
+# # BOTH 1
+# #     -> NORMAL
+# # ============================================================
+
+# up_is_active = (
+#     up_pred_value == 1
+#     and
+#     down_pred_value == 0
+# )
+
+
+# down_is_active = (
+#     down_pred_value == 1
+#     and
+#     up_pred_value == 0
+# )
+
+
+# # ============================================================
+# # TWO MODEL COLUMNS
+# # ============================================================
+
+# up_column, down_column = st.columns(2)
+
+
+# # ============================================================
+# # UP MODEL
+# # ============================================================
+
+# with up_column:
+
+#     if up_is_active:
+
+#         # Green area only when UP is the sole prediction
+#         with st.success(
+#             "🟢 UP MODEL — ACTIVE"
+#         ):
+
+#             st.write(
+#                 f"**UP Probability | "
+#                 f"Threshold: {up_threshold:.0%}**"
+#             )
+
+#             st.metric(
+#                 "UP Probability",
+#                 up_probability_display
+#             )
+
+#             st.write(
+#                 "**UP Prediction**"
+#             )
+
+#             st.write(
+#                 f"### {up_prediction_text}"
+#             )
+
+#     else:
+
+#         st.write(
+#             "🟢 **UP MODEL**"
+#         )
+
+#         st.write(
+#             f"**UP Probability | "
+#             f"Threshold: {up_threshold:.0%}**"
+#         )
+
+#         st.metric(
+#             "UP Probability",
+#             up_probability_display
+#         )
+
+#         st.write(
+#             "**UP Prediction**"
+#         )
+
+#         st.write(
+#             f"### {up_prediction_text}"
+#         )
+
+
+# # ============================================================
+# # DOWN MODEL
+# # ============================================================
+
+# with down_column:
+
+#     if down_is_active:
+
+#         # Red area only when DOWN is the sole prediction
+#         with st.error(
+#             "🔴 DOWN MODEL — ACTIVE"
+#         ):
+
+#             st.write(
+#                 f"**DOWN Probability | "
+#                 f"Threshold: {down_threshold:.0%}**"
+#             )
+
+#             st.metric(
+#                 "DOWN Probability",
+#                 down_probability_display
+#             )
+
+#             st.write(
+#                 "**DOWN Prediction**"
+#             )
+
+#             st.write(
+#                 f"### {down_prediction_text}"
+#             )
+
+#     else:
+
+#         st.write(
+#             "🔴 **DOWN MODEL**"
+#         )
+
+#         st.write(
+#             f"**DOWN Probability | "
+#             f"Threshold: {down_threshold:.0%}**"
+#         )
+
+#         st.metric(
+#             "DOWN Probability",
+#             down_probability_display
+#         )
+
+#         st.write(
+#             "**DOWN Prediction**"
+#         )
+
+#         st.write(
+#             f"### {down_prediction_text}"
+#         )
+
+
+# # ============================================================
+# # MODEL VERSION
+# # ============================================================
+
+# # st.caption(
+# #     f"⚙️ Model Version: "
+# #     f"{latest.get('model_version', 'N/A')}"
+# # )
+
+
+# st.divider()
+
+
+# # ============================================================
+# # PREDICTION HISTORY
+# # ============================================================
+
+# st.subheader(
+#     "📊 Prediction History"
+# )
+
+
+# # ============================================================
+# # LATEST 50 ROWS
+# # ============================================================
+
+# history_df = df.copy()
+
+
+# # Remove internal sorting helper
+
+# history_df = history_df.drop(
+#     columns=[
+#         "_session_order"
+#     ],
+#     errors="ignore"
+# )
+
+
+# # ============================================================
+# # LIMIT TO 50 ROWS
+# # ============================================================
+
+# history_df = history_df.head(
+#     50
+# ).copy()
+
+
+# # ============================================================
+# # FORMAT DATETIME
+# # ============================================================
+
+# history_df["datetime"] = (
+#     history_df["datetime"]
+#     .dt.strftime(
+#         "%d %b %Y %H:%M"
+#     )
+# )
+
+
+# # ============================================================
+# # FORMAT PROBABILITIES
+# # ============================================================
+
+# if "up_prob" in history_df.columns:
+
+#     history_df["up_prob"] = (
+#         history_df["up_prob"]
+#         .apply(
+#             lambda x:
+#             f"{float(x):.2%}"
+#             if pd.notna(x)
+#             else ""
+#         )
+#     )
+
+
+# if "down_prob" in history_df.columns:
+
+#     history_df["down_prob"] = (
+#         history_df["down_prob"]
+#         .apply(
+#             lambda x:
+#             f"{float(x):.2%}"
+#             if pd.notna(x)
+#             else ""
+#         )
+#     )
+
+
+# # ============================================================
+# # ROUND NUMERIC CHANGE / PREMIUM COLUMNS
+# # ============================================================
+
+# display_numeric_columns = [
+
+#     "up_prob_change_15m",
+#     "up_prob_change_cumulative",
+
+#     "down_prob_change_15m",
+#     "down_prob_change_cumulative",
+
+#     "anchor_call_premium_0915",
+#     "anchor_call_premium_current",
+#     "anchor_call_change_15m",
+#     "anchor_call_change_cumulative",
+
+#     "anchor_put_premium_0915",
+#     "anchor_put_premium_current",
+#     "anchor_put_change_15m",
+#     "anchor_put_change_cumulative"
+
+# ]
+
+
+# for column in display_numeric_columns:
+
+#     if column in history_df.columns:
+
+#         history_df[column] = (
+#             pd.to_numeric(
+#                 history_df[column],
+#                 errors="coerce"
+#             )
+#             .round(2)
+#         )
+
+
+# # ============================================================
+# # RENAME COLUMNS
+# # ============================================================
+
+# history_df = history_df.rename(
+#     columns={
+
+#         "symbol":
+#             "Symbol",
+
+#         "datetime":
+#             "Datetime",
+
+#         "session":
+#             "Session",
+
+#         "up_pred":
+#             "UP Prediction",
+
+#         "down_pred":
+#             "DOWN Prediction",
+
+#         "up_prob":
+#             "UP Probability",
+
+#         "up_prob_change_15m":
+#             "UP Prob Change 15m",
+
+#         "up_prob_change_cumulative":
+#             "UP Prob Change Cumulative",
+
+#         "down_prob":
+#             "DOWN Probability",
+
+#         "down_prob_change_15m":
+#             "DOWN Prob Change 15m",
+
+#         "down_prob_change_cumulative":
+#             "DOWN Prob Change Cumulative",
+
+#         "anchor_call_premium_0915":
+#             "Anchor Call Premium 09:15",
+
+#         "anchor_call_premium_current":
+#             "Anchor Call Premium Current",
+
+#         "anchor_call_change_15m":
+#             "Anchor Call Change 15m",
+
+#         "anchor_call_change_cumulative":
+#             "Anchor Call Change Cumulative",
+
+#         "anchor_put_premium_0915":
+#             "Anchor Put Premium 09:15",
+
+#         "anchor_put_premium_current":
+#             "Anchor Put Premium Current",
+
+#         "anchor_put_change_15m":
+#             "Anchor Put Change 15m",
+
+#         "anchor_put_change_cumulative":
+#             "Anchor Put Change Cumulative",
+
+#         "model_version":
+#             "Model Version"
+
+#     }
+# )
+
+
+# # ============================================================
+# # SHOW ALL COLUMNS
+# # ============================================================
+
+# st.dataframe(
+#     history_df,
+#     use_container_width=True,
+#     hide_index=True,
+#     height=600
+# )
+
+
+# # ============================================================
+# # FOOTER
+# # ============================================================
+
+# st.divider()
+
+
+# st.caption(
+#     "🔄 Live Google Sheets Data • "
+#     "Dashboard refreshes every 30 seconds • "
+#     "Showing latest 50 predictions"
+# )
+
 import streamlit as st
 import pandas as pd
 import gspread
@@ -1017,18 +1808,6 @@ st_autorefresh(
 
 # ============================================================
 # THRESHOLD CONFIGURATION
-#
-# IMPORTANT:
-# These are DISPLAY thresholds only.
-#
-# Streamlit DOES NOT calculate predictions using these values.
-# Predictions are taken directly from Google Sheets:
-#
-# up_pred
-# down_pred
-#
-# Keep these values exactly the same as the thresholds
-# used inside your respective model codes.
 # ============================================================
 
 THRESHOLDS = {
@@ -1078,7 +1857,6 @@ spreadsheet = gc.open_by_key(
     GOOGLE_SHEET_ID
 )
 
-
 sheet = spreadsheet.worksheet(
     GOOGLE_SHEET_TAB
 )
@@ -1122,20 +1900,28 @@ df = df.dropna(
 # ============================================================
 
 numeric_columns = [
+
     "up_prob",
     "down_prob",
+
     "up_pred",
     "down_pred",
+
     "up_prob_change_15m",
     "up_prob_change_cumulative",
+
     "down_prob_change_15m",
     "down_prob_change_cumulative",
+
     "anchor_call_premium_0915",
     "anchor_call_premium_current",
+
     "anchor_call_change_15m",
     "anchor_call_change_cumulative",
+
     "anchor_put_premium_0915",
     "anchor_put_premium_current",
+
     "anchor_put_change_15m",
     "anchor_put_change_cumulative"
 ]
@@ -1154,17 +1940,8 @@ for column in numeric_columns:
 # ============================================================
 # SORT DATA
 #
-# IMPORTANT:
-#
-# If Morning and Afternoon have the same datetime,
-# Afternoon is treated as the latest session.
-#
-# Example:
-#
-# 31 Aug 15:15 Morning
-# 31 Aug 15:15 Afternoon
-#
-# Afternoon will be displayed as the latest row.
+# If Morning and Afternoon have same datetime,
+# Afternoon is treated as latest.
 # ============================================================
 
 session_order = {
@@ -1294,18 +2071,7 @@ st.subheader(
 
 
 # ============================================================
-# GET PREDICTIONS FROM GOOGLE SHEETS
-#
-# IMPORTANT:
-#
-# We DO NOT calculate predictions here.
-#
-# The model already calculated:
-#
-# up_pred
-# down_pred
-#
-# Streamlit only displays them.
+# GET PREDICTIONS
 # ============================================================
 
 up_pred = latest.get(
@@ -1365,7 +2131,7 @@ if pd.isna(up_prob):
 else:
 
     up_probability_display = (
-        f"{float(up_prob):.2%}"
+        f"{float(up_prob):.2f}%"
     )
 
 
@@ -1376,7 +2142,7 @@ if pd.isna(down_prob):
 else:
 
     down_probability_display = (
-        f"{float(down_prob):.2%}"
+        f"{float(down_prob):.2f}%"
     )
 
 
@@ -1386,20 +2152,28 @@ else:
 
 if up_pred_value == 1:
 
-    up_prediction_text = "🟢🟢🟢 UP PREDICTION ⬆️🤑🟢🟢"
+    up_prediction_text = (
+        "🟢🟢🟢 UP PREDICTION ⬆️🤑🟢🟢"
+    )
 
 else:
 
-    up_prediction_text = "NO UP PREDICTION  ❌"
+    up_prediction_text = (
+        "NO UP PREDICTION ❌"
+    )
 
 
 if down_pred_value == 1:
 
-    down_prediction_text = "🔴🔴🔴 DOWN PREDICTION ⬇️🚨🔴🔴"
+    down_prediction_text = (
+        "🔴🔴🔴 DOWN PREDICTION ⬇️🚨🔴🔴"
+    )
 
 else:
 
-    down_prediction_text = "NO DOWN PREDICTION  ❌"
+    down_prediction_text = (
+        "NO DOWN PREDICTION ❌"
+    )
 
 
 # ============================================================
@@ -1449,7 +2223,6 @@ with up_column:
 
     if up_is_active:
 
-        # Green area only when UP is the sole prediction
         with st.success(
             "🟢 UP MODEL — ACTIVE"
         ):
@@ -1505,7 +2278,6 @@ with down_column:
 
     if down_is_active:
 
-        # Red area only when DOWN is the sole prediction
         with st.error(
             "🔴 DOWN MODEL — ACTIVE"
         ):
@@ -1553,16 +2325,6 @@ with down_column:
         )
 
 
-# ============================================================
-# MODEL VERSION
-# ============================================================
-
-# st.caption(
-#     f"⚙️ Model Version: "
-#     f"{latest.get('model_version', 'N/A')}"
-# )
-
-
 st.divider()
 
 
@@ -1576,13 +2338,15 @@ st.subheader(
 
 
 # ============================================================
-# LATEST 50 ROWS
+# COPY DATA
 # ============================================================
 
 history_df = df.copy()
 
 
-# Remove internal sorting helper
+# ============================================================
+# REMOVE INTERNAL SORTING HELPER
+# ============================================================
 
 history_df = history_df.drop(
     columns=[
@@ -1593,7 +2357,7 @@ history_df = history_df.drop(
 
 
 # ============================================================
-# LIMIT TO 50 ROWS
+# LIMIT TO LATEST 50 ROWS
 # ============================================================
 
 history_df = history_df.head(
@@ -1615,6 +2379,9 @@ history_df["datetime"] = (
 
 # ============================================================
 # FORMAT PROBABILITIES
+#
+# Example:
+# 0.3142 -> 31.42%
 # ============================================================
 
 if "up_prob" in history_df.columns:
@@ -1623,7 +2390,7 @@ if "up_prob" in history_df.columns:
         history_df["up_prob"]
         .apply(
             lambda x:
-            f"{float(x):.2%}"
+            f"{float(x):.2f}%"
             if pd.notna(x)
             else ""
         )
@@ -1636,7 +2403,7 @@ if "down_prob" in history_df.columns:
         history_df["down_prob"]
         .apply(
             lambda x:
-            f"{float(x):.2%}"
+            f"{float(x):.2f}%"
             if pd.notna(x)
             else ""
         )
@@ -1644,10 +2411,13 @@ if "down_prob" in history_df.columns:
 
 
 # ============================================================
-# ROUND NUMERIC CHANGE / PREMIUM COLUMNS
+# FORMAT PERCENTAGE CHANGE COLUMNS
+#
+# These columns represent percentage changes,
+# so add % symbol.
 # ============================================================
 
-display_numeric_columns = [
+percentage_columns = [
 
     "up_prob_change_15m",
     "up_prob_change_cumulative",
@@ -1655,20 +2425,16 @@ display_numeric_columns = [
     "down_prob_change_15m",
     "down_prob_change_cumulative",
 
-    "anchor_call_premium_0915",
-    "anchor_call_premium_current",
     "anchor_call_change_15m",
     "anchor_call_change_cumulative",
 
-    "anchor_put_premium_0915",
-    "anchor_put_premium_current",
     "anchor_put_change_15m",
     "anchor_put_change_cumulative"
 
 ]
 
 
-for column in display_numeric_columns:
+for column in percentage_columns:
 
     if column in history_df.columns:
 
@@ -1677,7 +2443,51 @@ for column in display_numeric_columns:
                 history_df[column],
                 errors="coerce"
             )
-            .round(2)
+            .apply(
+                lambda x:
+                f"{float(x):.2f}%"
+                if pd.notna(x)
+                else ""
+            )
+        )
+
+
+# ============================================================
+# FORMAT PREMIUM COLUMNS
+#
+# These are prices, NOT percentages.
+#
+# Example:
+# 79.15
+# 120.30
+# ============================================================
+
+premium_columns = [
+
+    "anchor_call_premium_0915",
+    "anchor_call_premium_current",
+
+    "anchor_put_premium_0915",
+    "anchor_put_premium_current"
+
+]
+
+
+for column in premium_columns:
+
+    if column in history_df.columns:
+
+        history_df[column] = (
+            pd.to_numeric(
+                history_df[column],
+                errors="coerce"
+            )
+            .apply(
+                lambda x:
+                f"{float(x):.2f}"
+                if pd.notna(x)
+                else ""
+            )
         )
 
 
@@ -1747,7 +2557,6 @@ history_df = history_df.rename(
 
         "model_version":
             "Model Version"
-
     }
 )
 
