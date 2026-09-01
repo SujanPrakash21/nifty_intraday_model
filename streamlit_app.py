@@ -2242,7 +2242,7 @@ with up_column:
         )
 
         st.write(
-            f"**Model Probability | Threshold: {up_threshold:.0%}**"
+            f"**UP Model Probability | Threshold: {up_threshold:.0%}**"
         )
 
         st.metric(
