@@ -2421,11 +2421,11 @@ if "down_prob" in history_df.columns:
 
 percentage_columns = [
 
-    # "up_prob_change_15m",
-    # "up_prob_change_cumulative",
+    "up_prob_change_15m",
+    "up_prob_change_cumulative",
 
-    # "down_prob_change_15m",
-    # "down_prob_change_cumulative",
+    "down_prob_change_15m",
+    "down_prob_change_cumulative",
 
     "anchor_call_change_15m",
     "anchor_call_change_cumulative",
