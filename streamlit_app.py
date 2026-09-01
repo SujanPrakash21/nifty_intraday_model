@@ -2362,13 +2362,38 @@ history_df["datetime"] = (
 # 0.3142 -> 31.42%
 # ============================================================
 
+# if "up_prob" in history_df.columns:
+
+#     history_df["up_prob"] = (
+#         history_df["up_prob"]
+#         .apply(
+#             lambda x:
+#             f"{float(x):.2f}%"
+#             if pd.notna(x)
+#             else ""
+#         )
+#     )
+
+
+# if "down_prob" in history_df.columns:
+
+#     history_df["down_prob"] = (
+#         history_df["down_prob"]
+#         .apply(
+#             lambda x:
+#             f"{float(x):.2f}%"
+#             if pd.notna(x)
+#             else ""
+#         )
+#     )
+
 if "up_prob" in history_df.columns:
 
     history_df["up_prob"] = (
         history_df["up_prob"]
         .apply(
             lambda x:
-            f"{float(x):.2f}%"
+            f"{float(x)*100:.2f}%"
             if pd.notna(x)
             else ""
         )
@@ -2381,12 +2406,11 @@ if "down_prob" in history_df.columns:
         history_df["down_prob"]
         .apply(
             lambda x:
-            f"{float(x):.2f}%"
+            f"{float(x)*100:.2f}%"
             if pd.notna(x)
             else ""
         )
     )
-
 
 # ============================================================
 # FORMAT PERCENTAGE CHANGE COLUMNS
