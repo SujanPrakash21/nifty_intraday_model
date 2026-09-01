@@ -1812,7 +1812,7 @@ st_autorefresh(
 
 THRESHOLDS = {
     "Morning": {
-        "up": 0.60,
+        "up": 0.55,
         "down": 0.50
     },
 
@@ -1994,7 +1994,7 @@ latest_session = str(
 session_thresholds = THRESHOLDS.get(
     latest_session,
     {
-        "up": 0.60,
+        "up": 0.55,
         "down": 0.50
     }
 )
