@@ -2228,8 +2228,7 @@ with up_column:
             f"**UP Probability | Threshold: {up_threshold:.0%}**\n\n"
             f"## {up_probability_display}\n\n"
             f"**UP Prediction**\n\n"
-            # f"## 🟢 UP PREDICTION ⬆️"
-            f"{up_prediction_text}"
+            f"## 🟢🟢🟢 UP PREDICTION ⬆️🤑🟢🟢"
         )
 
         st.success(
@@ -2274,8 +2273,7 @@ with down_column:
             f"**DOWN Probability | Threshold: {down_threshold:.0%}**\n\n"
             f"## {down_probability_display}\n\n"
             f"**DOWN Prediction**\n\n"
-            # f"## 🔴 DOWN PREDICTION ⬇️"
-            f"{down_prediction_text}"
+            f"## 🔴🔴🔴 DOWN PREDICTION ⬇️🚨🔴🔴"
         )
 
         st.error(
