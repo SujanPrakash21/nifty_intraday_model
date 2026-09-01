@@ -2153,7 +2153,7 @@ else:
 if up_pred_value == 1:
 
     up_prediction_text = (
-        "🟢🟢🟢 UP PREDICTION ⬆️🤑🟢🟢"
+        "🟢 UP PREDICTION ⬆️🤑"
     )
 
 else:
@@ -2166,7 +2166,7 @@ else:
 if down_pred_value == 1:
 
     down_prediction_text = (
-        "🔴🔴🔴 DOWN PREDICTION ⬇️🚨🔴🔴"
+        "🔴 DOWN PREDICTION ⬇️🚨"
     )
 
 else:
