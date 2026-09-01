@@ -2131,7 +2131,7 @@ if pd.isna(up_prob):
 else:
 
     up_probability_display = (
-        f"{float(up_prob):.2f}%"
+        f"{float(up_prob) * 100:.2f}%"
     )
 
 
@@ -2142,7 +2142,7 @@ if pd.isna(down_prob):
 else:
 
     down_probability_display = (
-        f"{float(down_prob):.2f}%"
+        f"{float(down_prob) * 100:.2f}%"
     )
 
 
@@ -2225,7 +2225,7 @@ with up_column:
 
         up_content = (
             f"🟢 **UP MODEL — ACTIVE**\n\n"
-            f"**UP Probability | Threshold: {up_threshold:.0%}**\n\n"
+            f"**UP Model Probability | Threshold: {up_threshold:.0%}**\n\n"
             f"## {up_probability_display}\n\n"
             f"**UP Prediction**\n\n"
             f"## 🟢 UP PREDICTION ⬆️🤑"
@@ -2242,12 +2242,12 @@ with up_column:
         )
 
         st.write(
-            f"**UP Probability | "
+            f"** Model Probability | "
             f"Threshold: {up_threshold:.0%}**"
         )
 
         st.metric(
-            "UP Probability",
+            "UP Model Probability",
             up_probability_display
         )
 
@@ -2270,8 +2270,8 @@ with down_column:
 
         down_content = (
             f"🔴 **DOWN MODEL — ACTIVE**\n\n"
-            f"**DOWN Probability | Threshold: {down_threshold:.0%}**\n\n"
-            f"## {down_probability_display}\n\n"
+            f"**DOWN Model Probability | Threshold: {down_threshold:.0%}**\n\n"
+            f"## {down_probability_display * 100}\n\n"
             f"**DOWN Prediction**\n\n"
             f"## 🔴 DOWN PREDICTION ⬇️🚨"
         )
@@ -2287,12 +2287,12 @@ with down_column:
         )
 
         st.write(
-            f"**DOWN Probability | "
+            f"**DOWN Model Probability | "
             f"Threshold: {down_threshold:.0%}**"
         )
 
         st.metric(
-            "DOWN Probability",
+            "DOWN Model Probability",
             down_probability_display
         )
 
