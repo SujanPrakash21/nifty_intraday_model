@@ -2271,7 +2271,7 @@ with down_column:
         down_content = (
             f"🔴 **DOWN MODEL — ACTIVE**\n\n"
             f"**DOWN Model Probability | Threshold: {down_threshold:.0%}**\n\n"
-            f"## {down_probability_display * 100}\n\n"
+            f"## {down_probability_display}\n\n"
             f"**DOWN Prediction**\n\n"
             f"## 🔴 DOWN PREDICTION ⬇️🚨"
         )
