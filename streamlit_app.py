@@ -3426,7 +3426,7 @@ fig.add_trace(
         name="UP Threshold 55%",
 
         line=dict(
-            color="white",
+            color="green",
             width=2,
             dash="dot"
         ),
@@ -3450,7 +3450,7 @@ fig.add_trace(
         name="DOWN Threshold 50%",
 
         line=dict(
-            color="yellow",
+            color="red",
             width=2,
             dash="dot"
         ),
