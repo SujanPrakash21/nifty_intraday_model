@@ -3489,18 +3489,17 @@ fig.update_layout(
     legend=dict(
         orientation="h",
         yanchor="bottom",
-        y=1.15,
-        xanchor="center",
-        x=0.5,
+        y=1.02,
+        xanchor="left",
+        x=0,
         font=dict(
-            size=10
+            size=8
         ),
-        itemwidth=30
+        itemwidth=30,
+        traceorder="normal"
     )
+
 )
-
-
-
 
 fig.update_yaxes(
     range=[
@@ -3512,9 +3511,17 @@ fig.update_yaxes(
 
 st.plotly_chart(
     fig,
-    use_container_width=True
+    use_container_width=True,
+    config={
+        "displayModeBar": True,
+        "modeBarButtonsToRemove": [
+            "zoom2d",
+            "pan2d",
+            "select2d",
+            "lasso2d"
+        ]
+    }
 )
-
 # ============================================================
 # PREDICTION HISTORY
 # ============================================================
