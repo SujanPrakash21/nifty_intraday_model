@@ -3493,7 +3493,7 @@ fig.update_layout(
         xanchor="left",
         x=0,
         font=dict(
-            size=8
+            size=10
         ),
         itemwidth=30,
         traceorder="normal"
