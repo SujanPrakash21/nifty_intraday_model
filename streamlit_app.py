@@ -3426,7 +3426,7 @@ fig.add_trace(
         name="UP Threshold 55%",
 
         line=dict(
-            color="green",
+            color="white",
             width=2,
             dash="dot"
         ),
@@ -3450,7 +3450,7 @@ fig.add_trace(
         name="DOWN Threshold 50%",
 
         line=dict(
-            color="red",
+            color="yellow",
             width=2,
             dash="dot"
         ),
@@ -3466,10 +3466,40 @@ fig.update_layout(
 
     hovermode="closest",
 
-    xaxis_title="Time",
+    xaxis=dict(
+        title="Time",
+        title_font=dict(
+            size=10
+        ),
+        tickfont=dict(
+            size=9
+        )
+    ),
 
-    yaxis_title="Probability (%)",
+    yaxis=dict(
+        title="Probability (%)",
+        title_font=dict(
+            size=10
+        ),
+        tickfont=dict(
+            size=9
+        )
+    ),
+
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.15,
+        xanchor="center",
+        x=0.5,
+        font=dict(
+            size=10
+        ),
+        itemwidth=30
+    )
 )
+
+
 
 
 fig.update_yaxes(
