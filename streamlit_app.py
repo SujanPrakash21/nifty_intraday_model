@@ -2710,6 +2710,84 @@ df = df.dropna(
 
 
 # ============================================================
+# HIT RATE START DATE
+# ============================================================
+
+HIT_RATE_START_DATE = pd.Timestamp("2026-09-07").date()
+
+
+# ============================================================
+# CALCULATE HIT RATE
+# ============================================================
+
+hit_rate_df = df[
+    df["datetime"].dt.date >= HIT_RATE_START_DATE
+].copy()
+
+
+# Convert prediction columns
+hit_rate_df["up_pred"] = pd.to_numeric(
+    hit_rate_df["up_pred"],
+    errors="coerce"
+).fillna(0)
+
+hit_rate_df["down_pred"] = pd.to_numeric(
+    hit_rate_df["down_pred"],
+    errors="coerce"
+).fillna(0)
+
+hit_rate_df["hit_status"] = pd.to_numeric(
+    hit_rate_df["hit_status"],
+    errors="coerce"
+)
+
+
+# Only actual trades:
+# UP = 1, DOWN = 0
+# OR
+# UP = 0, DOWN = 1
+
+hit_rate_df = hit_rate_df[
+    (
+        (hit_rate_df["up_pred"] == 1) &
+        (hit_rate_df["down_pred"] == 0)
+    )
+    |
+    (
+        (hit_rate_df["up_pred"] == 0) &
+        (hit_rate_df["down_pred"] == 1)
+    )
+].copy()
+
+
+# Only completed trades
+completed_hit_rate_df = hit_rate_df[
+    hit_rate_df["hit_status"].isin([0, 1])
+].copy()
+
+
+total_completed_trades = len(
+    completed_hit_rate_df
+)
+
+total_hits = int(
+    completed_hit_rate_df["hit_status"].sum()
+)
+
+
+if total_completed_trades > 0:
+
+    hit_rate = (
+        total_hits /
+        total_completed_trades
+    ) * 100
+
+else:
+
+    hit_rate = 0
+
+
+# ============================================================
 # CONVERT NUMERIC COLUMNS
 # ============================================================
 
@@ -2827,11 +2905,49 @@ st.title(
     "📈 NIFTY Intraday Model Dashboard"
 )
 
-
 st.caption(
     "Morning & Afternoon Model Predictions"
 )
 
+
+# ============================================================
+# HIT RATE KPI
+# ============================================================
+
+st.subheader("📊 Hit Rate")
+
+
+kpi1, kpi2, kpi3 = st.columns(3)
+
+
+with kpi1:
+
+    st.metric(
+        "Hit Rate",
+        f"{hit_rate:.2f}%"
+    )
+
+
+with kpi2:
+
+    st.metric(
+        "Hits",
+        total_hits
+    )
+
+
+with kpi3:
+
+    st.metric(
+        "Completed Trades",
+        total_completed_trades
+    )
+
+
+st.caption(
+    f"Hit Rate calculated from "
+    f"{HIT_RATE_START_DATE.strftime('%d %b %Y')}"
+)
 
 st.divider()
 
