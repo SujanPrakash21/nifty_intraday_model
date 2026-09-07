@@ -3343,7 +3343,7 @@ fig.add_trace(
 
 
 up_signal_df = prob_df[
-    prob_df["up_prob"] >= up_threshold
+    prob_df["up_pred"] == 1
 ]
 
 
@@ -3374,7 +3374,7 @@ fig.add_trace(
 
 
 down_signal_df = prob_df[
-    prob_df["down_prob"] >= down_threshold
+    prob_df["down_pred"] == 1
 ]
 
 
