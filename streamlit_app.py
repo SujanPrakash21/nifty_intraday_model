@@ -3634,9 +3634,9 @@ with kpi3:
     )
 
 
-st.caption(
-    "Calculated from 07 Sep 2026 onwards"
-)
+# st.caption(
+#     "Calculated from 07 Sep 2026 onwards"
+# )
 
 st.divider()
 
