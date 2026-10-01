@@ -3528,7 +3528,7 @@ st.plotly_chart(
 # HIT RATE KPI
 # ============================================================
 
-HIT_RATE_START_DATE = pd.Timestamp("2026-09-07").date()
+HIT_RATE_START_DATE = pd.Timestamp("2026-10-01").date()
 
 
 # Use only predictions from 07 Sep 2026 onwards
