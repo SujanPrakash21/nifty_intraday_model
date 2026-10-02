@@ -2626,13 +2626,13 @@ st_autorefresh(
 
 THRESHOLDS = {
     "Morning": {
-        "up": 0.85,
-        "down": 0.80
+        "up": 0.55,
+        "down": 0.50
     },
 
     "Afternoon": {
-        "up": 0.85,
-        "down": 0.80
+        "up": 0.55,
+        "down": 0.50
     }
 }
 
